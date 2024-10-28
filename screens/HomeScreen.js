@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'; 
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const restaurantesPopulares = [
   { id: '1', nome: 'Burst Burger', tempo: '20-40 Min', descricao: 'Burgers Artesanais', rating: 4.2, frete: 'Grátis', imagem: 'https://example.com/burger.jpg' },
@@ -37,37 +37,40 @@ const RestaurantList = ({ data }) => (
   </View>
 );
 
-export default function App() {
+export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      {/* Barra de Navegação Superior */}
+      {/* Top Navigation Bar */}
       <View style={styles.topNav}>
         <TouchableOpacity>
-          <MaterialIcons name="menu" size={24} color="#007676" />
+          <Ionicons name="menu" size={20} color="#007676" />
         </TouchableOpacity>
-        <Text style={styles.addressText}>Rua Bel Alliance</Text>
+        <Text style={styles.locationText}>Rua Bel Alliance</Text>
         <View style={styles.topNavIcons}>
           <TouchableOpacity>
-            <FontAwesome name="ticket" size={20} color="#007676" />
+            <Ionicons name="search-outline" size={20} color="#007676" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.icon}>
-            <FontAwesome name="bell" size={20} color="#007676" />
+          <TouchableOpacity style={styles.cartIcon}>
+            <Ionicons name="pricetags" size={20} color="#007676" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cartIcon}>
+            <Ionicons name="cart-outline" size={20} color="#007676" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Categorias */}
-      <View style={styles.categoryContainer}>
+      {/* Category Buttons */}
+      <View style={styles.categoryButtons}>
         <TouchableOpacity style={styles.categoryButton}>
-          <MaterialIcons name="whatshot" size={20} color="#ff4500" />
+          <Ionicons name="flame-outline" size={20} color="#808080" />
           <Text style={styles.categoryText}>Em Alta</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryButton}>
-          <MaterialIcons name="fastfood" size={20} color="#ff8c00" />
-          <Text style={styles.categoryText}>Burgers</Text>
+          <Ionicons name="wine-outline" size={20} color="#808080" />
+          <Text style={styles.categoryText}>Bebidas</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryButton}>
-          <MaterialIcons name="cake" size={20} color="#ff69b4" />
+          <Ionicons name="ice-cream-outline" size={20} color="#808080" />
           <Text style={styles.categoryText}>Doces</Text>
         </TouchableOpacity>
       </View>
@@ -88,22 +91,22 @@ export default function App() {
         </View>
       </ScrollView>
 
-      {/* Barra de Navegação Inferior */}
+      {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="home" size={24} color="#007676" />
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="home-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Início</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="search" size={24} color="#007676" />
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="search-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Busca</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="receipt" size={24} color="#007676" />
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="receipt-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Pedidos</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="person" size={24} color="#007676" />
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="person-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
       </View>
@@ -115,45 +118,53 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingBottom: 60, 
   },
   topNav: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: '#fff',
-    elevation: 3,
+    padding: 16,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderColor: '#DDD',
   },
-  addressText: {
+  locationText: {
     fontSize: 16,
+    color: '#007676',
     fontWeight: 'bold',
-    color: '#007676', 
   },
   topNavIcons: {
     flexDirection: 'row',
   },
-  icon: {
-    marginLeft: 15,
+  cartIcon: {
+    marginLeft: 16,
   },
-  categoryContainer: {
+  categoryButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: '#fff',
+    marginTop: 6,
   },
   categoryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#a7a7a7',  
+    borderRadius: 5,
+    marginHorizontal: 5,
   },
   categoryText: {
-    marginLeft: 5,
-    fontSize: 14,
-    color: '#333',
+    fontSize: 12,
+    color: '#808080',
+    fontWeight: 'bold',
+    marginLeft: 6,
   },
   mainContent: {
+    flex: 1,
     padding: 10,
   },
   section: {
@@ -165,7 +176,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   restaurantListContainer: {
-    alignItems: 'center', // Centraliza o FlatList
+    alignItems: 'center',
   },
   restaurantCard: {
     backgroundColor: '#f8f8f8',
@@ -173,7 +184,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     width: 150,
-    alignItems: 'center', // Centraliza o conteúdo dentro do card
+    alignItems: 'center',
   },
   image: {
     width: '100%',
@@ -201,18 +212,21 @@ const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
+    backgroundColor: '#FFF',
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    backgroundColor: '#fff',
-    elevation: 10,
+    borderColor: '#DDD',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
-  navItem: {
+  navButton: {
     alignItems: 'center',
   },
   navText: {
     fontSize: 12,
     color: '#007676',
+    marginTop: 4,
   },
 });

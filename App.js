@@ -1,228 +1,327 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; // You may need to install this package
 
-const App = () => {
-  const [arutzBurgerQty, setArutzBurgerQty] = useState(2);
-  const [brownieQty, setBrownieQty] = useState(1);
-  const frete = 5.0;
-  const arutzBurgerPrice = 21.9;
-  const browniePrice = 10.9;
-  const total = arutzBurgerQty * arutzBurgerPrice + brownieQty * browniePrice + frete;
-
+export default function ProductDetails() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sacola</Text>
-
-      <View style={styles.header}>
-        <Image source={{ uri: 'https://example.com/logo.png' }} style={styles.logo} />
-        <View>
-          <Text style={styles.storeName}>Burst Burger</Text>
-          <Text style={styles.storeDetails}>Av Goiás, 670 - São Caetano do Sul</Text>
-          <Text style={styles.deliveryTime}>20 - 40 Min</Text>
+      {/* Top Navigation Bar */}
+      <View style={styles.topNav}>
+        <TouchableOpacity>
+          <Ionicons name="arrow-back" size={24} color="#007676" />
+        </TouchableOpacity>
+        <Text style={styles.locationText}>Rua Bel Alliance</Text>
+        <View style={styles.topNavIcons}>
+          <TouchableOpacity>
+            <Ionicons name="search-outline" size={24} color="#007676" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cartIcon}>
+            <Ionicons name="cart-outline" size={24} color="#007676" />
+          </TouchableOpacity>
         </View>
-        <Text style={styles.frete}>Frete: R$ {frete.toFixed(2)}</Text>
       </View>
 
-      <ScrollView style={styles.itemsContainer}>
-        {/* Arutz Burger */}
-        <View style={styles.itemRow}>
-          <Image source={{ uri: 'https://example.com/arutz-burger.png' }} style={styles.itemImage} />
-          <View style={styles.itemDetails}>
-            <Text style={styles.itemName}>Arutz Burguer</Text>
-            <Text style={styles.itemPrice}>R$ {arutzBurgerPrice.toFixed(2)}</Text>
-          </View>
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity onPress={() => setArutzBurgerQty(Math.max(0, arutzBurgerQty - 1))}>
-              <Text style={styles.quantityButton}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantity}>{arutzBurgerQty}</Text>
-            <TouchableOpacity onPress={() => setArutzBurgerQty(arutzBurgerQty + 1)}>
-              <Text style={styles.quantityButton}>+</Text>
-            </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Product Content */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Burst Burger</Text>
+          <Text style={styles.subTitle}>20 ~ 40 Min • Aberto</Text>
+          <Text style={styles.address}>Av Goiás - 370, São Caetano do Sul</Text>
+        </View>
+
+        <Image
+          source={{ uri: 'https://example.com/burger-image.png' }} // Replace with actual image URL
+          style={styles.image}
+        />
+
+        <View style={styles.productInfo}>
+          <Text style={styles.productName}>Arutz Burguer</Text>
+          <Text style={styles.productDescription}>
+            Sanduíche com Filé de Peito de Frango crocante 100g, no pão Brioche, acompanhado de muçarela, maionese, molho da casa, salada, picles e cebola.
+          </Text>
+          <View style={styles.badges}>
+            <Text style={styles.badge}>Contém Lactose</Text>
+            <Text style={styles.badge}>Contém Gluten</Text>
           </View>
         </View>
 
-        {/* Brownie */}
-        <View style={styles.itemRow}>
-          <Image source={{ uri: 'https://example.com/brownie.png' }} style={styles.itemImage} />
-          <View style={styles.itemDetails}>
-            <Text style={styles.itemName}>Brownie</Text>
-            <Text style={styles.itemPrice}>R$ {browniePrice.toFixed(2)}</Text>
-          </View>
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity onPress={() => setBrownieQty(Math.max(0, brownieQty - 1))}>
-              <Text style={styles.quantityButton}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantity}>{brownieQty}</Text>
-            <TouchableOpacity onPress={() => setBrownieQty(brownieQty + 1)}>
-              <Text style={styles.quantityButton}>+</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Additional options sections */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Deixe seu lanche mais gostoso</Text>
+          {renderOption("Alface", "R$ 2,50")}
+          {renderOption("Picles", "R$ 2,00")}
+          {renderOption("Cheddar", "R$ 5,90")}
+          {renderOption("Cebola", "R$ 2,00")}
         </View>
 
-        {/* "Peça Também" Section */}
-        <Text style={styles.sectionTitle}>Peça Também</Text>
-        <View style={styles.suggestions}>
-          {['H2OH', 'Bolo da Casa', 'Petit Gateau'].map((item, index) => (
-            <View key={index} style={styles.suggestionItem}>
-              <Image source={{ uri: `https://example.com/${item.toLowerCase()}.png` }} style={styles.suggestionImage} />
-              <Text style={styles.suggestionName}>{item}</Text>
-              <Text style={styles.suggestionPrice}>
-                {item === 'H2OH' ? 'R$8,00' : item === 'Bolo da Casa' ? 'R$15,90' : 'R$17,90'}
-              </Text>
-              <TouchableOpacity style={styles.addButton}>
-                <Text style={styles.addButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Molhos</Text>
+          {renderOption("Maionese Caseira", "R$ 3,50", "https://example.com/maionese.png")}
+          {renderOption("Molho Tasty", "R$ 3,50", "https://example.com/tasty.png")}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Acompanhamentos</Text>
+          {renderOption("Batata Rústica Média", "R$ 9,90", "https://example.com/batata.png")}
+          {renderOption("Nuggets", "R$ 12,90", "https://example.com/nuggets.png")}
+          {renderOption("Onion Rings", "R$ 14,90", "https://example.com/onion_rings.png")}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Bebidas</Text>
+          {renderOption("Coca Cola Lata", "R$ 7,00", "https://example.com/coca.png")}
+          {renderOption("H2O", "R$ 8,00", "https://example.com/h2o.png")}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Sobremesas</Text>
+          {renderOption("Brownie", "R$ 10,90", "https://example.com/brownie.png")}
+        </View>
+
+        <TextInput
+          placeholder="Algum comentário?"
+          style={styles.commentInput}
+        />
+
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.addButton}>
+            <Text style={styles.addButtonText}>Adicionar</Text>
+          </TouchableOpacity>
+          <Text style={styles.price}>R$ 21,90</Text>
+          <View style={styles.quantityControl}>
+            <TouchableOpacity style={styles.quantityButton}>
+              <Text style={styles.quantityText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantity}>1</Text>
+            <TouchableOpacity style={styles.quantityButton}>
+              <Text style={styles.quantityText}>+</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <Text style={styles.totalText}>Total com frete</Text>
-        <Text style={styles.totalAmount}>R$ {total.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.continueButton}>
-          <Text style={styles.continueButtonText}>Continuar</Text>
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="home-outline" size={24} color="#007676" />
+          <Text style={styles.navText}>Início</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="search-outline" size={24} color="#007676" />
+          <Text style={styles.navText}>Busca</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="receipt-outline" size={24} color="#007676" />
+          <Text style={styles.navText}>Pedidos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="person-outline" size={24} color="#007676" />
+          <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-};
+}
 
-const styles = StyleSheet.create({
+const renderOption = (name, price, imageUrl) => (
+  <View style={styles.option}>
+    {imageUrl && <Image source={{ uri: imageUrl }} style={styles.optionImage} />}
+    <Text style={styles.optionText}>{name} - {price}</Text>
+    <TouchableOpacity style={styles.addOptionButton}>
+      <Text style={styles.addOptionText}>+</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
+    backgroundColor: '#ffffff',
   },
-  title: {
-    fontSize: 24,
+  scrollContainer: {
+    paddingHorizontal: 16,
+  },
+  topNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  navButton: {
+    padding: 8,
+  },
+  navTitle: {
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#000',
   },
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-  },
-  logo: {
-    width: 50,
-    height: 50,
-    marginRight: 10,
-  },
-  storeName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  storeDetails: {
-    color: '#777',
-  },
-  deliveryTime: {
-    color: '#777',
-  },
-  frete: {
-    marginLeft: 'auto',
-    fontWeight: 'bold',
-  },
-  itemsContainer: {
-    flex: 1,
-  },
-  itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  itemImage: {
-    width: 60,
-    height: 60,
-    marginRight: 10,
-  },
-  itemDetails: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  itemPrice: {
-    color: '#777',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  quantityButton: {
-    fontSize: 20,
-    width: 25,
-    textAlign: 'center',
-    color: '#007bff',
-  },
-  quantity: {
-    fontSize: 16,
-    width: 25,
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
     marginVertical: 10,
   },
-  suggestions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  suggestionItem: {
-    alignItems: 'center',
-    width: 100,
-  },
-  suggestionImage: {
-    width: 80,
-    height: 80,
-  },
-  suggestionName: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  suggestionPrice: {
-    fontSize: 14,
-    color: '#777',
-  },
-  addButton: {
-    backgroundColor: '#007bff',
-    borderRadius: 15,
-    padding: 5,
-    marginTop: 5,
-  },
-  addButtonText: {
-    color: '#fff',
+  title: {
+    fontSize: 22,
     fontWeight: 'bold',
+    color: '#333', 
+  },
+  subTitle: {
+    color: '#888',
+  },
+  address: {
+    color: '#888',
+    fontSize: 12,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+  productInfo: {
+    marginVertical: 10,
+  },
+  productName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  productDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  badges: {
+    flexDirection: 'row',
+    marginVertical: 8,
+  },
+  badge: {
+    backgroundColor: '#eee',
+    color: '#888',
+    padding: 4,
+    borderRadius: 4,
+    marginRight: 4,
+    fontSize: 12,
+  },
+  section: {
+    marginVertical: 10,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#333', 
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  optionImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 4,
+    marginRight: 10,
+  },
+  optionText: {
+    flex: 1,
+    fontSize: 14,
+  },
+  addOptionButton: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
+    padding: 6,
+  },
+  addOptionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  commentInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 10,
   },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    paddingTop: 10,
+    justifyContent: 'space-between',
+    paddingVertical: 20,
   },
-  totalText: {
+  addButton: {
+    backgroundColor: '#28a745',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  addButtonText: {
+    color: '#fff',
     fontSize: 16,
+    fontWeight: 'bold',
   },
-  totalAmount: {
+  price: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10,
-    marginRight: 'auto',
   },
-  continueButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
+  quantityControl: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  continueButtonText: {
-    color: '#fff',
+  quantityButton: {
+    backgroundColor: '#f0f0f0',
+    padding: 8,
+    borderRadius: 4,
+  },
+  quantityText: {
+    fontSize: 16,
     fontWeight: 'bold',
   },
-});
+  quantity: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginHorizontal: 10,
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    backgroundColor: '#fff',
+  },
+  navIcon: {
+    alignItems: 'center',
+  },
+  navIconLabel: {
+    fontSize: 12,
+    color: '#000',
+  },
+  navText: {
+    fontSize: 12,
+    color: '#007676',
+    marginTop: 4,
+  },
 
-export default App;
+
+  // restaurantscreen css 
+  topNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#FFF',
+  },
+  locationText: {
+    fontSize: 16,
+    color: '#007676',
+    fontWeight: 'bold',
+  },
+  topNavIcons: {
+    flexDirection: 'row',
+  },
+  cartIcon: {
+    marginLeft: 16,
+  },
+};

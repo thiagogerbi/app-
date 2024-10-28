@@ -14,7 +14,7 @@ const SIDES = [
   { id: '3', name: 'Onion Rings', description: 'Porção Frita 180g\n+ Molho Caseiro', price: 'R$ 14,90', image: 'onionrings' },
 ];
 
-export default function App() {
+export default function RestaurantScreen() {
   const renderBurger = ({ item }) => (
     <View style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.cardImage} />
@@ -30,15 +30,15 @@ export default function App() {
       {/* Top Navigation Bar */}
       <View style={styles.topNav}>
         <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="#007676" />
+          <Ionicons name="arrow-back" size={20} color="#007676" />
         </TouchableOpacity>
         <Text style={styles.locationText}>Rua Bel Alliance</Text>
         <View style={styles.topNavIcons}>
           <TouchableOpacity>
-            <Ionicons name="search-outline" size={24} color="#007676" />
+            <Ionicons name="pricetags" size={20} color="#007676" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={24} color="#007676" />
+            <Ionicons name="cart-outline" size={20} color="#007676" />
           </TouchableOpacity>
         </View>
       </View>
@@ -48,7 +48,8 @@ export default function App() {
           <Image source={{ uri: 'logo' }} style={styles.logo} />
           <View style={styles.headerTextContainer}>
             <Text style={styles.title}>Burst Burger</Text>
-            <Text style={styles.subtitle}>★ 4 Mil Avaliações - Av Goiás - 370, São Caetano do Sul</Text>
+            <Text style={styles.subtitle}>★★★★★ 4 Mil Avaliações</Text>
+            <Text style={styles.subtitle}>Av Goiás - 370, São Caetano do Sul</Text>
             <Text style={styles.status}>20 - 40 Min • Aberto</Text>
           </View>
         </View>
@@ -86,19 +87,19 @@ export default function App() {
       {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={24} color="#007676" />
+          <Ionicons name="home-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Início</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={24} color="#007676" />
+          <Ionicons name="search-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Busca</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={24} color="#007676" />
+          <Ionicons name="receipt-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Pedidos</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={24} color="#007676" />
+          <Ionicons name="person-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
       </View>
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   tab: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#666',
   },
   activeTab: {
