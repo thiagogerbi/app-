@@ -26,6 +26,9 @@ export default function User() {
         <View style={styles.optionContainer}>
           <OptionItem icon="person" title="Informações Pessoais" />
           <OptionItem icon="location" title="Endereços" />
+          </View>
+
+        <View style={styles.optionContainer}>
           <OptionItem icon="cart" title="Sacola" />
           <OptionItem icon="heart" title="Favoritos" />
           <OptionItem icon="notifications" title="Notificações" />
