@@ -229,14 +229,15 @@ const styles = StyleSheet.create({
   },
   trackButton: {
     flex: 1,
-    backgroundColor: '#008080',
+    backgroundColor: '#fff',
+    border: '2px, solid, #007676', 
     paddingVertical: 10,
     borderRadius: 5,
     alignItems: 'center',
     marginRight: 10,
   },
   trackButtonText: {
-    color: '#FFFFFF',
+    color: '#007676',
     fontSize: 16,
   },
   cancelButton: {
@@ -244,10 +245,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 5,
     alignItems: 'center',
-    backgroundColor: '#FF0000',
+    backgroundColor: '#FFF',
+    border: '2px, solid, #FF0000',  
   },
   cancelButtonText: {
-    color: '#FFFFFF',
+    color: '#FF0000',
     fontSize: 16,
   },
   scrollView: {
