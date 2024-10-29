@@ -1,120 +1,96 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // You may need to install this package
+import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function ProductDetails() {
+// Importando imagens locais
+import burgerImage from './assets/img/burger.png';
+import pizzaImage from './assets/img/pizza.png';
+import japonesaImage from './assets/img/japonesa.png';
+import mexicanaImage from './assets/img/mexicana.png';
+import massasImage from './assets/img/massas.png';
+import docesImage from './assets/img/doces.png';
+import fitImage from './assets/img/fit.png';
+import padariaImage from './assets/img/padaria.png';
+import churrascoImage from './assets/img/churrasco.png';
+import veganaImage from './assets/img/vegana.png';
+import chinesaImage from './assets/img/chinesa.png';
+import marmitaImage from './assets/img/marmita.png';
+
+export default function OrderScreen() {
   return (
     <View style={styles.container}>
       {/* Top Navigation Bar */}
       <View style={styles.topNav}>
         <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="#007676" />
+          <Ionicons name="arrow-back" size={20} color="#007676" />
         </TouchableOpacity>
         <Text style={styles.locationText}>Rua Bel Alliance</Text>
         <View style={styles.topNavIcons}>
           <TouchableOpacity>
-            <Ionicons name="search-outline" size={24} color="#007676" />
+            <Ionicons name="pricetags" size={20} color="#007676" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={24} color="#007676" />
+            <Ionicons name="cart-outline" size={20} color="#007676" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Product Content */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Burst Burger</Text>
-          <Text style={styles.subTitle}>20 ~ 40 Min • Aberto</Text>
-          <Text style={styles.address}>Av Goiás - 370, São Caetano do Sul</Text>
-        </View>
-
-        <Image
-          source={{ uri: 'https://example.com/burger-image.png' }} // Replace with actual image URL
-          style={styles.image}
-        />
-
-        <View style={styles.productInfo}>
-          <Text style={styles.productName}>Arutz Burguer</Text>
-          <Text style={styles.productDescription}>
-            Sanduíche com Filé de Peito de Frango crocante 100g, no pão Brioche, acompanhado de muçarela, maionese, molho da casa, salada, picles e cebola.
-          </Text>
-          <View style={styles.badges}>
-            <Text style={styles.badge}>Contém Lactose</Text>
-            <Text style={styles.badge}>Contém Gluten</Text>
+      {/* Order Information */}
+      <View style={styles.orderBox}>
+        <View style={styles.restaurantInfo}>
+          <Image
+            source={{ uri: 'https://via.placeholder.com/50' }} // Logo placeholder
+            style={styles.logo}
+          />
+          <View>
+            <Text style={styles.restaurantName}>Burst Burger</Text>
+            <Text style={styles.restaurantDetails}>Av Goiás, 360 - São Caetano</Text>
+            <Text style={styles.time}>20 ~ 40 Min</Text>
           </View>
         </View>
 
-        {/* Additional options sections */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Deixe seu lanche mais gostoso</Text>
-          {renderOption("Alface", "R$ 2,50")}
-          {renderOption("Picles", "R$ 2,00")}
-          {renderOption("Cheddar", "R$ 5,90")}
-          {renderOption("Cebola", "R$ 2,00")}
+        <View style={styles.orderItems}>
+          <Text style={styles.item}>2x Burst Burger</Text>
+          <Text style={styles.price}>R$ 43,80</Text>
         </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Molhos</Text>
-          {renderOption("Maionese Caseira", "R$ 3,50", "https://example.com/maionese.png")}
-          {renderOption("Molho Tasty", "R$ 3,50", "https://example.com/tasty.png")}
+        <View style={styles.orderItems}>
+          <Text style={styles.item}>1x Brownie</Text>
+          <Text style={styles.price}>R$ 10,90</Text>
         </View>
+        <Text style={styles.total}>Total: R$ 54,70</Text>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Acompanhamentos</Text>
-          {renderOption("Batata Rústica Média", "R$ 9,90", "https://example.com/batata.png")}
-          {renderOption("Nuggets", "R$ 12,90", "https://example.com/nuggets.png")}
-          {renderOption("Onion Rings", "R$ 14,90", "https://example.com/onion_rings.png")}
-        </View>
+        <Text style={styles.address}>Endereço de Entrega</Text>
+        <Text style={styles.addressDetails}>Rua Bel Alliance, 56 - São Caetano do Sul</Text>
+        
+        <Text style={styles.payment}>Forma de Pagamento</Text>
+        <Text style={styles.paymentDetails}>Cartão de Crédito (Visa)</Text>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Bebidas</Text>
-          {renderOption("Coca Cola Lata", "R$ 7,00", "https://example.com/coca.png")}
-          {renderOption("H2O", "R$ 8,00", "https://example.com/h2o.png")}
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Sobremesas</Text>
-          {renderOption("Brownie", "R$ 10,90", "https://example.com/brownie.png")}
-        </View>
-
-        <TextInput
-          placeholder="Algum comentário?"
-          style={styles.commentInput}
-        />
-
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.addButton}>
-            <Text style={styles.addButtonText}>Adicionar</Text>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.trackButton}>
+            <Text style={styles.trackButtonText}>Acompanhar</Text>
           </TouchableOpacity>
-          <Text style={styles.price}>R$ 21,90</Text>
-          <View style={styles.quantityControl}>
-            <TouchableOpacity style={styles.quantityButton}>
-              <Text style={styles.quantityText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantity}>1</Text>
-            <TouchableOpacity style={styles.quantityButton}>
-              <Text style={styles.quantityText}>+</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.cancelButton}>
+            <Text style={styles.cancelButtonText}>Cancelar</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
 
+      {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={24} color="#007676" />
+          <Ionicons name="home-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Início</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={24} color="#007676" />
+          <Ionicons name="search-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Busca</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={24} color="#007676" />
+          <Ionicons name="receipt-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Pedidos</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={24} color="#007676" />
+          <Ionicons name="person-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
       </View>
@@ -122,196 +98,19 @@ export default function ProductDetails() {
   );
 }
 
-const renderOption = (name, price, imageUrl) => (
-  <View style={styles.option}>
-    {imageUrl && <Image source={{ uri: imageUrl }} style={styles.optionImage} />}
-    <Text style={styles.optionText}>{name} - {price}</Text>
-    <TouchableOpacity style={styles.addOptionButton}>
-      <Text style={styles.addOptionText}>+</Text>
-    </TouchableOpacity>
-  </View>
-);
-
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
-  scrollContainer: {
-    paddingHorizontal: 16,
-  },
-  topNav: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  navButton: {
-    padding: 8,
-  },
-  navTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  header: {
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333', 
-  },
-  subTitle: {
-    color: '#888',
-  },
-  address: {
-    color: '#888',
-    fontSize: 12,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    borderRadius: 8,
-    marginVertical: 10,
-  },
-  productInfo: {
-    marginVertical: 10,
-  },
-  productName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  productDescription: {
-    fontSize: 14,
-    color: '#666',
-  },
-  badges: {
-    flexDirection: 'row',
-    marginVertical: 8,
-  },
-  badge: {
-    backgroundColor: '#eee',
-    color: '#888',
-    padding: 4,
-    borderRadius: 4,
-    marginRight: 4,
-    fontSize: 12,
-  },
-  section: {
-    marginVertical: 10,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#333', 
-  },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  optionImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 4,
-    marginRight: 10,
-  },
-  optionText: {
-    flex: 1,
-    fontSize: 14,
-  },
-  addOptionButton: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-    padding: 6,
-  },
-  addOptionText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  commentInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 10,
-    marginTop: 10,
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 20,
-  },
-  addButton: {
-    backgroundColor: '#28a745',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  quantityControl: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  quantityButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 8,
-    borderRadius: 4,
-  },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  quantity: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginHorizontal: 10,
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    backgroundColor: '#fff',
-  },
-  navIcon: {
-    alignItems: 'center',
-  },
-  navIconLabel: {
-    fontSize: 12,
-    color: '#000',
-  },
-  navText: {
-    fontSize: 12,
-    color: '#007676',
-    marginTop: 4,
-  },
-
-
-  // restaurantscreen css 
   topNav: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
     backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderColor: '#DDD',
   },
   locationText: {
     fontSize: 16,
@@ -324,4 +123,116 @@ const styles = {
   cartIcon: {
     marginLeft: 16,
   },
-};
+  orderBox: {
+    margin: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+  },
+  restaurantInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  restaurantName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  restaurantDetails: {
+    color: '#666',
+  },
+  time: {
+    color: '#666',
+  },
+  orderItems: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  item: {
+    fontSize: 16,
+  },
+  price: {
+    fontSize: 16,
+    color: '#666',
+  },
+  total: {
+    textAlign: 'right',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginVertical: 10,
+  },
+  address: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  addressDetails: {
+    fontSize: 14,
+    color: '#666',
+  },
+  payment: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  paymentDetails: {
+    fontSize: 14,
+    color: '#666',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  trackButton: {
+    flex: 1,
+    backgroundColor: '#008080',
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  trackButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    backgroundColor: '#FF0000',
+  },
+  cancelButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 12,
+    backgroundColor: '#FFF',
+    borderTopWidth: 1,
+    borderColor: '#DDD',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  navButton: {
+    alignItems: 'center',
+  },
+  navText: {
+    fontSize: 12,
+    color: '#007676',
+    marginTop: 4,
+  },
+});

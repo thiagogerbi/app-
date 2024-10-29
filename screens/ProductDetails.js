@@ -8,15 +8,15 @@ export default function ProductDetails() {
       {/* Top Navigation Bar */}
       <View style={styles.topNav}>
         <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="#007676" />
+          <Ionicons name="arrow-back" size={20} color="#007676" />
         </TouchableOpacity>
         <Text style={styles.locationText}>Rua Bel Alliance</Text>
         <View style={styles.topNavIcons}>
           <TouchableOpacity>
-            <Ionicons name="search-outline" size={24} color="#007676" />
+            <Ionicons name="pricetags" size={20} color="#007676" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={24} color="#007676" />
+            <Ionicons name="cart-outline" size={20} color="#007676" />
           </TouchableOpacity>
         </View>
       </View>
@@ -102,19 +102,19 @@ export default function ProductDetails() {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={24} color="#007676" />
+          <Ionicons name="home-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Início</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={24} color="#007676" />
+          <Ionicons name="search-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Busca</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={24} color="#007676" />
+          <Ionicons name="receipt-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Pedidos</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={24} color="#007676" />
+          <Ionicons name="person-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
       </View>
@@ -189,6 +189,8 @@ const styles = {
   productDescription: {
     fontSize: 14,
     color: '#666',
+    marginTop: 8,
+    marginBottom: 6, 
   },
   badges: {
     flexDirection: 'row',
@@ -229,13 +231,15 @@ const styles = {
     fontSize: 14,
   },
   addOptionButton: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
+    /*backgroundColor: '#f0f0f0',*/
     padding: 6,
+    alignItems: 'center', // Centraliza o texto dentro do botão
+    justifyContent: 'center',
   },
   addOptionText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: 'rgb(136, 126, 136)', 
   },
   commentInput: {
     borderWidth: 1,
@@ -251,9 +255,9 @@ const styles = {
     paddingVertical: 20,
   },
   addButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#007676',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 40,
     borderRadius: 8,
   },
   addButtonText: {
@@ -262,7 +266,7 @@ const styles = {
     fontWeight: 'bold',
   },
   price: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   quantityControl: {
@@ -272,10 +276,10 @@ const styles = {
   quantityButton: {
     backgroundColor: '#f0f0f0',
     padding: 8,
-    borderRadius: 4,
+    borderRadius: 6,
   },
   quantityText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   quantity: {

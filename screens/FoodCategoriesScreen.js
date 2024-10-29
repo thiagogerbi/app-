@@ -2,21 +2,50 @@ import React from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+// Importando imagens locais
+import burgerImage from './assets/img/burger.png';
+import pizzaImage from './assets/img/pizza.png';
+import japonesaImage from './assets/img/japonesa.png';
+import mexicanaImage from './assets/img/mexicana.png';
+import massasImage from './assets/img/massas.png';
+import docesImage from './assets/img/doces.png';
+import fitImage from './assets/img/fit.png';
+import padariaImage from './assets/img/padaria.png';
+import churrascoImage from './assets/img/churrasco.png';
+import veganaImage from './assets/img/vegana.png';
+import chinesaImage from './assets/img/chinesa.png';
+import marmitaImage from './assets/img/marmita.png';
+
 export default function FoodCategoriesScreen() {
+  const categories = [
+    { name: 'Burgers', image: burgerImage },
+    { name: 'Pizzas', image: pizzaImage },
+    { name: 'Japonesa', image: japonesaImage },
+    { name: 'Mexicana', image: mexicanaImage },
+    { name: 'Massas', image: massasImage },
+    { name: 'Doces', image: docesImage },
+    { name: 'Fit', image: fitImage },
+    { name: 'Padaria', image: padariaImage },
+    { name: 'Churrasco', image: churrascoImage },
+    { name: 'Vegana', image: veganaImage },
+    { name: 'Chinesa', image: chinesaImage },
+    { name: 'Marmita', image: marmitaImage },
+  ];
+
   return (
     <View style={styles.container}>
       {/* Top Navigation Bar */}
       <View style={styles.topNav}>
         <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="#007676" />
+          <Ionicons name="arrow-back" size={20} color="#007676" />
         </TouchableOpacity>
         <Text style={styles.locationText}>Rua Bel Alliance</Text>
         <View style={styles.topNavIcons}>
           <TouchableOpacity>
-            <Ionicons name="search-outline" size={24} color="#007676" />
+            <Ionicons name="pricetags" size={20} color="#007676" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={24} color="#007676" />
+            <Ionicons name="cart-outline" size={20} color="#007676" />
           </TouchableOpacity>
         </View>
       </View>
@@ -27,7 +56,7 @@ export default function FoodCategoriesScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder="Pesquise o seu prato ou restaurante favorito"
-          placeholderTextColor="#009688"
+          placeholderTextColor="#a7a7a7"
         />
       </View>
 
@@ -36,7 +65,7 @@ export default function FoodCategoriesScreen() {
         {categories.map((category, index) => (
           <TouchableOpacity key={index} style={styles.categoryButton}>
             <Image 
-              source={{ uri: 'https://via.placeholder.com/50' }} 
+              source={category.image} 
               style={styles.categoryImage} 
             />
             <Text style={styles.categoryText}>{category.name}</Text>
@@ -47,41 +76,25 @@ export default function FoodCategoriesScreen() {
       {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={24} color="#007676" />
+          <Ionicons name="home-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Início</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={24} color="#007676" />
+          <Ionicons name="search-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Busca</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={24} color="#007676" />
+          <Ionicons name="receipt-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Pedidos</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={24} color="#007676" />
+          <Ionicons name="person-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
-
-// Sample categories data
-const categories = [
-  { name: 'Burgers' },
-  { name: 'Pizzas' },
-  { name: 'Japonesa' },
-  { name: 'Mexicana' },
-  { name: 'Massas' },
-  { name: 'Doces' },
-  { name: 'Fit' },
-  { name: 'Padaria' },
-  { name: 'Churrasco' },
-  { name: 'Vegana' },
-  { name: 'Chinesa' },
-  { name: 'Marmita' },
-];
 
 const styles = StyleSheet.create({
   container: {
@@ -111,7 +124,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    /*backgroundColor: '#f0f0f0',*/
     borderRadius: 20,
     marginHorizontal: 16,
     marginTop: 10,
@@ -137,7 +150,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     paddingVertical: 20,
-    paddingBottom: 40, // Extra padding to ensure last items are visible
+    /*paddingBottom: 40, // Extra padding to ensure last items are visible*/
   },
   categoryButton: {
     width: '40%',
