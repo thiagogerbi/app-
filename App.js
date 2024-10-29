@@ -1,30 +1,22 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// Importando imagens locais
-import burgerImage from './assets/img/burger.png';
-import pizzaImage from './assets/img/pizza.png';
-import japonesaImage from './assets/img/japonesa.png';
-import mexicanaImage from './assets/img/mexicana.png';
-import massasImage from './assets/img/massas.png';
-import docesImage from './assets/img/doces.png';
-import fitImage from './assets/img/fit.png';
-import padariaImage from './assets/img/padaria.png';
-import churrascoImage from './assets/img/churrasco.png';
-import veganaImage from './assets/img/vegana.png';
-import chinesaImage from './assets/img/chinesa.png';
-import marmitaImage from './assets/img/marmita.png';
+// Importando a logo local
+import logoImage from './assets/img/logo.png';
 
 export default function OrderScreen() {
+  const [selectedTab, setSelectedTab] = useState('meusPedidos');
+
   return (
     <View style={styles.container}>
-      {/* Top Navigation Bar */}
+      {/* Barra de Navegação Superior */}
       <View style={styles.topNav}>
         <TouchableOpacity>
           <Ionicons name="arrow-back" size={20} color="#007676" />
         </TouchableOpacity>
-        <Text style={styles.locationText}>Rua Bel Alliance</Text>
+        {/* Logo no centro da barra de navegação */}
+        <Image source={logoImage} style={styles.logoTopNav} />
         <View style={styles.topNavIcons}>
           <TouchableOpacity>
             <Ionicons name="pricetags" size={20} color="#007676" />
@@ -35,47 +27,68 @@ export default function OrderScreen() {
         </View>
       </View>
 
-      {/* Order Information */}
-      <View style={styles.orderBox}>
-        <View style={styles.restaurantInfo}>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/50' }} // Logo placeholder
-            style={styles.logo}
-          />
-          <View>
-            <Text style={styles.restaurantName}>Burst Burger</Text>
-            <Text style={styles.restaurantDetails}>Av Goiás, 360 - São Caetano</Text>
-            <Text style={styles.time}>20 ~ 40 Min</Text>
-          </View>
-        </View>
-
-        <View style={styles.orderItems}>
-          <Text style={styles.item}>2x Burst Burger</Text>
-          <Text style={styles.price}>R$ 43,80</Text>
-        </View>
-        <View style={styles.orderItems}>
-          <Text style={styles.item}>1x Brownie</Text>
-          <Text style={styles.price}>R$ 10,90</Text>
-        </View>
-        <Text style={styles.total}>Total: R$ 54,70</Text>
-
-        <Text style={styles.address}>Endereço de Entrega</Text>
-        <Text style={styles.addressDetails}>Rua Bel Alliance, 56 - São Caetano do Sul</Text>
-        
-        <Text style={styles.payment}>Forma de Pagamento</Text>
-        <Text style={styles.paymentDetails}>Cartão de Crédito (Visa)</Text>
-
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.trackButton}>
-            <Text style={styles.trackButtonText}>Acompanhar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelButton}>
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Abas "Meus Pedidos" e "Histórico de Pedidos" */}
+      <View style={styles.tabsContainer}>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'meusPedidos' && styles.activeTab]}
+          onPress={() => setSelectedTab('meusPedidos')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'meusPedidos' && styles.activeTabText]}>Meus Pedidos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'historicoPedidos' && styles.activeTab]}
+          onPress={() => setSelectedTab('historicoPedidos')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'historicoPedidos' && styles.activeTabText]}>Histórico de Pedidos</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Bottom Navigation Bar */}
+      {/* Informações do Pedido */}
+      <ScrollView style={styles.scrollView}>
+        {selectedTab === 'meusPedidos' ? (
+          <View style={styles.orderBox}>
+            <View style={styles.restaurantInfo}>
+              <Image source={logoImage} style={styles.logo} />
+              <View>
+                <Text style={styles.restaurantName}>Burst Burger</Text>
+                <Text style={styles.restaurantDetails}>Av Goiás, 360 - São Caetano</Text>
+                <Text style={styles.time}>20 ~ 40 Min</Text>
+              </View>
+            </View>
+
+            <View style={styles.orderItems}>
+              <Text style={styles.item}>2x Burst Burger</Text>
+              <Text style={styles.price}>R$ 43,80</Text>
+            </View>
+            <View style={styles.orderItems}>
+              <Text style={styles.item}>1x Brownie</Text>
+              <Text style={styles.price}>R$ 10,90</Text>
+            </View>
+            <Text style={styles.total}>Total: R$ 54,70</Text>
+
+            <Text style={styles.address}>Endereço de Entrega</Text>
+            <Text style={styles.addressDetails}>Rua Bel Alliance, 56 - São Caetano do Sul</Text>
+            
+            <Text style={styles.payment}>Forma de Pagamento</Text>
+            <Text style={styles.paymentDetails}>Cartão de Crédito (Visa)</Text>
+
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity style={styles.trackButton}>
+                <Text style={styles.trackButtonText}>Acompanhar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.orderBox}>
+            <Text style={styles.historicoText}>Nenhum pedido passado encontrado.</Text>
+          </View>
+        )}
+      </ScrollView>
+
+      {/* Barra de Navegação Inferior */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
           <Ionicons name="home-outline" size={20} color="#007676" />
@@ -112,16 +125,38 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#DDD',
   },
-  locationText: {
-    fontSize: 16,
-    color: '#007676',
-    fontWeight: 'bold',
+  logoTopNav: {
+    width: 100,
+    height: 40,
+    resizeMode: 'contain',
   },
   topNavIcons: {
     flexDirection: 'row',
   },
   cartIcon: {
     marginLeft: 16,
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#DDD',
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  activeTab: {
+    borderBottomWidth: 2,
+    borderColor: '#007676',
+  },
+  tabText: {
+    color: '#777',
+    fontSize: 16,
+  },
+  activeTabText: {
+    color: '#007676',
+    fontWeight: 'bold',
   },
   orderBox: {
     margin: 16,
@@ -214,6 +249,15 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
+  },
+  scrollView: {
+    flex: 1,
+    marginBottom: 60,
+  },
+  historicoText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#666',
   },
   bottomNav: {
     flexDirection: 'row',
