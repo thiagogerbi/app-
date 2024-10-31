@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import supabase from "../supabase";
+import { useState } from 'react';
+import Toast from 'react-native-toast-message';
+import supabase from './supabase';
 
 export default function Cadastro() {
-
   const [formData, setFormData] = useState({
-    nomeUsuario: '',
+    nome: '',
     telefone: '',
     cpf: '',
     cep: '',
     estado: '',
     rua: '',
     numero: '',
-    bairro: '',
+    bairro: '', // Campo bairro já existente
+    complemento: '',
     cidade: ''
   });
 
@@ -26,7 +28,6 @@ export default function Cadastro() {
 
   const handleSubmit = async () => {
     try {
-
       // Criação do endereço
       const addressUsuario = {
         rua: formData.rua,
@@ -34,6 +35,7 @@ export default function Cadastro() {
         cidade: formData.cidade,
         estado: formData.estado,
         bairro: formData.bairro,
+        complemento: formData.complemento,
         cep: formData.cep
       };
 
@@ -46,7 +48,7 @@ export default function Cadastro() {
 
       // Criação do usuário com o endereço inserido
       const usuario = {
-        nome: formData.nomeUsuario,
+        nome: formData.nome,
         cpf: formData.cpf,
         telefone: formData.telefone,
         id_endereco: insertedAddress[0].id,
@@ -85,20 +87,21 @@ export default function Cadastro() {
       </View>
       <Text style={styles.title}>Cadastro</Text>
 
-      <TextInput placeholder="Nome" style={styles.input}  onChangeText={(text) => handleInputChange('nome', text)} />
-      <TextInput placeholder="Telefone" style={styles.input} onChangeText={(text) => handleInputChange('telefone', text)}/>
+      <TextInput placeholder="Nome" style={styles.input} onChangeText={(text) => handleInputChange('nome', text)} />
+      <TextInput placeholder="Telefone" style={styles.input} onChangeText={(text) => handleInputChange('telefone', text)} />
       <View style={styles.row}>
-        <TextInput placeholder="CPF" style={[styles.input, styles.halfInput]}  onChangeText={(text) => handleInputChange('cpf', text)} />
-        <TextInput placeholder="CEP" style={[styles.input, styles.halfInput]}  onChangeText={(text) => handleInputChange('cep', text)}/>
+        <TextInput placeholder="CPF" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('cpf', text)} />
+        <TextInput placeholder="CEP" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('cep', text)} />
       </View>
-      <TextInput placeholder="Rua" style={styles.input} onChangeText={(text) => handleInputChange('rua', text)}/>
+      <TextInput placeholder="Rua" style={styles.input} onChangeText={(text) => handleInputChange('rua', text)} />
+      <TextInput placeholder="Bairro" style={styles.input} onChangeText={(text) => handleInputChange('bairro', text)} /> {/* Campo Bairro */}
       <View style={styles.row}>
         <TextInput placeholder="Número" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('numero', text)} />
-        <TextInput placeholder="Complemento" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('complemento', text)}/>
+        <TextInput placeholder="Complemento" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('complemento', text)} />
       </View>
       <View style={styles.row}>
-        <TextInput placeholder="Estado" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('estado', text)}/>
-        <TextInput placeholder="Cidade" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('cidade', text)}/>
+        <TextInput placeholder="Estado" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('estado', text)} />
+        <TextInput placeholder="Cidade" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('cidade', text)} />
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
@@ -113,7 +116,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#eaf1f1',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 20,
   },
   backIcon: {
     alignSelf: 'flex-start',
@@ -123,8 +126,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    width: 120, // Ajuste conforme o tamanho desejado
-    height: 120, // Ajuste conforme o tamanho desejado
+    width: 100, // Ajuste conforme o tamanho desejado
+    height: 100, // Ajuste conforme o tamanho desejado
     resizeMode: 'contain',
   },
   title: {
