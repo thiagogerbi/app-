@@ -1,8 +1,82 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import supabase from "../supabase";
 
 export default function Cadastro() {
+
+  const [formData, setFormData] = useState({
+    nomeUsuario: '',
+    telefone: '',
+    cpf: '',
+    cep: '',
+    estado: '',
+    rua: '',
+    numero: '',
+    bairro: '',
+    cidade: ''
+  });
+
+  const handleInputChange = (name, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+
+      // Criação do endereço
+      const addressUsuario = {
+        rua: formData.rua,
+        numero: formData.numero,
+        cidade: formData.cidade,
+        estado: formData.estado,
+        bairro: formData.bairro,
+        cep: formData.cep
+      };
+
+      const { data: insertedAddress, error: errorAddress } = await supabase
+        .from("EnderecoCliente")
+        .insert(addressUsuario)
+        .select("id");
+
+      if (errorAddress) throw new Error("Erro ao salvar o endereço do usuário");
+
+      // Criação do usuário com o endereço inserido
+      const usuario = {
+        nome: formData.nomeUsuario,
+        cpf: formData.cpf,
+        telefone: formData.telefone,
+        id_endereco: insertedAddress[0].id,
+      };
+
+      const { error: errorUsuario } = await supabase
+        .from("Cliente")
+        .insert(usuario);
+
+      if (errorUsuario) throw new Error("Erro ao salvar o usuário");
+
+      Toast.show({
+        type: 'success',
+        text1: 'Sucesso!',
+        text2: 'Usuário cadastrado com sucesso.'
+      });
+
+      // Navega para a tela de login
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+
+      Toast.show({
+        type: 'error',
+        text1: 'Erro!',
+        text2: error.message || 'Ocorreu um erro ao salvar o usuário.'
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Ionicons name="arrow-back" size={24} color="teal" style={styles.backIcon} />
@@ -11,23 +85,23 @@ export default function Cadastro() {
       </View>
       <Text style={styles.title}>Cadastro</Text>
 
-      <TextInput placeholder="Nome" style={styles.input} />
-      <TextInput placeholder="Sobrenome" style={styles.input} />
+      <TextInput placeholder="Nome" style={styles.input}  onChangeText={(text) => handleInputChange('nome', text)} />
+      <TextInput placeholder="Telefone" style={styles.input} onChangeText={(text) => handleInputChange('telefone', text)}/>
       <View style={styles.row}>
-        <TextInput placeholder="CPF" style={[styles.input, styles.halfInput]} />
-        <TextInput placeholder="CEP" style={[styles.input, styles.halfInput]} />
+        <TextInput placeholder="CPF" style={[styles.input, styles.halfInput]}  onChangeText={(text) => handleInputChange('cpf', text)} />
+        <TextInput placeholder="CEP" style={[styles.input, styles.halfInput]}  onChangeText={(text) => handleInputChange('cep', text)}/>
       </View>
-      <TextInput placeholder="Rua" style={styles.input} />
+      <TextInput placeholder="Rua" style={styles.input} onChangeText={(text) => handleInputChange('rua', text)}/>
       <View style={styles.row}>
-        <TextInput placeholder="Número" style={[styles.input, styles.halfInput]} />
-        <TextInput placeholder="Complemento" style={[styles.input, styles.halfInput]} />
+        <TextInput placeholder="Número" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('numero', text)} />
+        <TextInput placeholder="Complemento" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('complemento', text)}/>
       </View>
       <View style={styles.row}>
-        <TextInput placeholder="Estado" style={[styles.input, styles.halfInput]} />
-        <TextInput placeholder="Cidade" style={[styles.input, styles.halfInput]} />
+        <TextInput placeholder="Estado" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('estado', text)}/>
+        <TextInput placeholder="Cidade" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('cidade', text)}/>
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Avançar</Text>
       </TouchableOpacity>
     </View>
