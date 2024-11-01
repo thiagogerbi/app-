@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'reac
 import { Ionicons } from '@expo/vector-icons';
 import supabase from '../supabase';
 
-export default function CadastroPassword() {
+export default function CadastroPassword({ navigation }) { // Recebe navigation como parâmetro
   const [formData, setFormData] = useState({
     email: '',
     senha: '',
@@ -43,6 +43,9 @@ export default function CadastroPassword() {
       if (errorUser) throw new Error("Erro ao salvar o usuário");
 
       alert('Usuário cadastrado com sucesso!');
+
+      // Navega para a próxima tela após o cadastro
+      navigation.navigate('Cadastro');
     } catch (error) {
       console.error(error.message);
       setErrorMessage('Erro ao cadastrar o usuário. Tente novamente.');
@@ -53,7 +56,7 @@ export default function CadastroPassword() {
     <View style={styles.container}>
       <Ionicons name="arrow-back" size={20} color="teal" style={styles.backIcon} />
       <View style={styles.logoContainer}>
-        <Image source={require('./assets/img/logo-login.png')} style={styles.logo} />
+        <Image source={require('../assets/img/logo-login.png')} style={styles.logo} />
       </View>
       <Text style={styles.title}>Cadastro</Text>
 

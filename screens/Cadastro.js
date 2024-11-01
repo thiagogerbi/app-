@@ -14,7 +14,7 @@ export default function Cadastro() {
     estado: '',
     rua: '',
     numero: '',
-    bairro: '', // Campo bairro já existente
+    bairro: '',
     complemento: '',
     cidade: ''
   });
@@ -28,6 +28,19 @@ export default function Cadastro() {
 
   const handleSubmit = async () => {
     try {
+      // Busca o último cliente registrado
+      const { data: lastCliente, error: errorLastCliente } = await supabase
+        .from('Cliente')
+        .select('id')
+        .order('id', { ascending: false })
+        .limit(1);
+
+      if (errorLastCliente || !lastCliente.length) {
+        throw new Error("Não foi possível obter o último cliente.");
+      }
+
+      const clienteId = lastCliente[0].id;
+
       // Criação do endereço
       const addressUsuario = {
         rua: formData.rua,
@@ -46,24 +59,23 @@ export default function Cadastro() {
 
       if (errorAddress) throw new Error("Erro ao salvar o endereço do usuário");
 
-      // Criação do usuário com o endereço inserido
-      const usuario = {
-        nome: formData.nome,
-        cpf: formData.cpf,
-        telefone: formData.telefone,
-        id_endereco: insertedAddress[0].id,
-      };
-
-      const { error: errorUsuario } = await supabase
+        // Atualiza o último cliente com os novos dados
+        const { error: errorUpdateCliente } = await supabase
         .from("Cliente")
-        .insert(usuario);
+        .update({
+          id_endereco: insertedAddress[0].id,
+          nome: formData.nome,
+          telefone: formData.telefone,
+          cpf: formData.cpf
+        })
+        .eq("id", clienteId);
 
-      if (errorUsuario) throw new Error("Erro ao salvar o usuário");
+      if (errorUpdateCliente) throw new Error("Erro ao atualizar o cliente com os dados.");
 
       Toast.show({
         type: 'success',
         text1: 'Sucesso!',
-        text2: 'Usuário cadastrado com sucesso.'
+        text2: 'Endereço associado ao último cliente com sucesso.'
       });
 
       // Navega para a tela de login
@@ -83,7 +95,7 @@ export default function Cadastro() {
     <View style={styles.container}>
       <Ionicons name="arrow-back" size={24} color="teal" style={styles.backIcon} />
       <View style={styles.logoContainer}>
-        <Image source={require('./assets/img/logo-login.png')} style={styles.logo} />
+        <Image source={require('../assets/img/logo-login.png')} style={styles.logo} />
       </View>
       <Text style={styles.title}>Cadastro</Text>
 
@@ -94,7 +106,7 @@ export default function Cadastro() {
         <TextInput placeholder="CEP" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('cep', text)} />
       </View>
       <TextInput placeholder="Rua" style={styles.input} onChangeText={(text) => handleInputChange('rua', text)} />
-      <TextInput placeholder="Bairro" style={styles.input} onChangeText={(text) => handleInputChange('bairro', text)} /> {/* Campo Bairro */}
+      <TextInput placeholder="Bairro" style={styles.input} onChangeText={(text) => handleInputChange('bairro', text)} />
       <View style={styles.row}>
         <TextInput placeholder="Número" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('numero', text)} />
         <TextInput placeholder="Complemento" style={[styles.input, styles.halfInput]} onChangeText={(text) => handleInputChange('complemento', text)} />
@@ -126,8 +138,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    width: 100, // Ajuste conforme o tamanho desejado
-    height: 100, // Ajuste conforme o tamanho desejado
+    width: 100,
+    height: 100,
     resizeMode: 'contain',
   },
   title: {

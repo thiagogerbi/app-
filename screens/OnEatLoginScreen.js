@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 
 // Importa a imagem da logo diretamente
-const logoImage = require('./assets/img/logo-login.png'); // Caminho relativo à pasta do componente
-const loginImage = require('./assets/img/login.png'); // Caminho da imagem de login
+const logoImage = require('../assets/img/logo-login.png'); // Caminho relativo à pasta do componente
+const loginImage = require('../assets/img/login.png'); // Caminho da imagem de login
 
-export default function OnEatLoginScreen() {
+export default function OnEatLoginScreen({ navigation }) { // Recebe navigation como parâmetro
   return (
     <View style={styles.container}>
       {/* Imagem ocupando a parte de cima da tela */}
@@ -32,7 +32,8 @@ export default function OnEatLoginScreen() {
 
       <Text style={styles.orText}>ou</Text>
 
-      <TouchableOpacity style={styles.button}>
+      {/* Corrigindo a navegação no botão "Cadastre-se" */}
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CadastroPassword')}>
         <Text style={styles.buttonText}>Cadastre-se</Text>
       </TouchableOpacity>
 
