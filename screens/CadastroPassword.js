@@ -1,8 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import supabase from '../supabase';
 
 export default function CadastroPassword() {
+  const [formData, setFormData] = useState({
+    email: '',
+    senha: '',
+    confirmarSenha: ''
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleInputChange = (name, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async () => {
+    // Verifica se as senhas coincidem antes de tentar salvar no banco de dados
+    if (formData.senha !== formData.confirmarSenha) {
+      setErrorMessage('As senhas não coincidem.');
+      return; // Interrompe a execução se as senhas não coincidem
+    }
+
+    try {
+      // Limpa a mensagem de erro antes de tentar salvar o usuário
+      setErrorMessage('');
+
+      // Criação do usuário
+      const userLogin = {
+        email: formData.email,
+        senha: formData.senha
+      };
+
+      const { error: errorUser } = await supabase
+        .from("Cliente")
+        .insert(userLogin)
+        .select("id");
+
+      if (errorUser) throw new Error("Erro ao salvar o usuário");
+
+      alert('Usuário cadastrado com sucesso!');
+    } catch (error) {
+      console.error(error.message);
+      setErrorMessage('Erro ao cadastrar o usuário. Tente novamente.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Ionicons name="arrow-back" size={20} color="teal" style={styles.backIcon} />
@@ -11,14 +57,28 @@ export default function CadastroPassword() {
       </View>
       <Text style={styles.title}>Cadastro</Text>
 
-      <TextInput placeholder="Digite seu e-mail" style={styles.input} />
-      <TextInput placeholder="Digite sua senha" style={styles.input} />
-      <TextInput placeholder="Confirme sua senha" style={styles.input} />
-      <View style={styles.row}>
-        
-      </View>
-      
-      <TouchableOpacity style={styles.button}>
+      <TextInput
+        placeholder="Digite seu e-mail"
+        style={styles.input}
+        onChangeText={(text) => handleInputChange('email', text)}
+      />
+      <TextInput
+        placeholder="Digite sua senha"
+        style={styles.input}
+        secureTextEntry={true}
+        onChangeText={(text) => handleInputChange('senha', text)}
+      />
+      <TextInput
+        placeholder="Confirme sua senha"
+        style={styles.input}
+        secureTextEntry={true}
+        onChangeText={(text) => handleInputChange('confirmarSenha', text)}
+      />
+
+      {/* Exibe a mensagem de erro se houver */}
+      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Avançar</Text>
       </TouchableOpacity>
     </View>
@@ -40,8 +100,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    width: 120, // Ajuste conforme o tamanho desejado
-    height: 120, // Ajuste conforme o tamanho desejado
+    width: 120,
+    height: 120,
     resizeMode: 'contain',
   },
   title: {
@@ -58,19 +118,17 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  halfInput: {
-    width: '48%',
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   button: {
     backgroundColor: 'teal',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 20, // 20
+    marginTop: 20,
   },
   buttonText: {
     color: '#fff',

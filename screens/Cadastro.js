@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'reac
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
-import supabase from './supabase';
+import supabase from '../supabase';
 
 export default function Cadastro() {
   const [formData, setFormData] = useState({
