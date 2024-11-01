@@ -26,7 +26,7 @@ export default function OnEatLoginScreen({ navigation }) { // Recebe navigation 
       </Text>
       <Text style={styles.subText}>O que deseja fazer hoje?</Text>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LoginScreen')}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 

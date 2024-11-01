@@ -5,7 +5,8 @@ import HomeScreen from './screens/HomeScreen';
 import CadastroPassword from './screens/CadastroPassword';
 import Cadastro from './screens/Cadastro';
 import Adresses from './screens/Adresses';
-import Login from './screens/OnEatLoginScreen'
+import Login from './screens/OnEatLoginScreen';
+import LoginScreen from './screens/LoginScreen';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ export default function App() {
         <Stack.Screen name="Adresses" component={Adresses} />
         <Stack.Screen name="Cadastro" component={Cadastro} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
