@@ -28,7 +28,7 @@ export default function LoginScreen() {
           type: 'success',
           text1: 'Login realizado com sucesso!',
         });
-        navigation.navigate('HomeScreen');
+        navigation.navigate('Home', { id: cliente[0].id });
       } else {
         // Usuário não encontrado
         Toast.show({

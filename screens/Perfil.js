@@ -1,8 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import  supabase  from '../supabase'; // Verifique se está no caminho correto
 
-export default function Perfil() {
+export default function Perfil({ route, navigation }) {
+  const [usuario, setUsuario] = useState(null); 
+  const [isLoading, setIsLoading] = useState(true);
+  const userId = route.params?.id;
+
+  useEffect(() => {
+    if (userId) {
+      console.log('User ID:', userId); // Verifique se o userId está correto
+      fetchUserData();
+    } else {
+      console.warn('userId não encontrado');
+      setIsLoading(false); // Para o carregamento caso userId não exista
+    }
+  }, [userId]);
+
+  const fetchUserData = async () => {
+    try {
+      setIsLoading(true);
+
+      // Buscar dados do cliente
+      const { data: clienteData, error: clienteError } = await supabase
+        .from('Cliente')
+        .select('nome, email, telefone, id_endereco')
+        .eq('id', userId)
+        .single();
+
+      if (clienteError) throw clienteError;
+
+      const { id_endereco, nome, email, telefone } = clienteData;
+
+      // Buscar dados do endereço associado ao cliente
+      const { data: enderecoData, error: enderecoError } = await supabase
+        .from('EnderecoCliente')
+        .select('rua')
+        .eq('id', id_endereco)
+        .single();
+
+      if (enderecoError) throw enderecoError;
+
+      setUsuario({ nome, email, telefone, endereco: enderecoData.rua });
+    } catch (error) {
+      console.error('Erro ao buscar dados do usuário:', error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.loadingText}>Carregando...</Text>
+      </View>
+    );
+  }
+
+  if (!usuario) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Erro ao carregar dados do usuário.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* Header with back arrow and title */}
@@ -14,27 +77,27 @@ export default function Perfil() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.profileContainer}>
           <Image
-            source={require('./assets/img/user-g.png')} 
+            source={require('../assets/img/user-g.png')} 
             style={styles.profileImage}
           />
-          <Text style={styles.profileName}>Giovanni Antonio</Text>
+          <Text style={styles.profileName}>{usuario?.nome || 'Nome não disponível'}</Text>
         </View>
 
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <Ionicons name="person-outline" size={20} color="#007676" style={styles.icon} />
             <Text style={styles.infoLabel}>Nome Completo</Text>
-            <Text style={styles.infoValue}>Giovanni Antônio F. Monteiro</Text>
+            <Text style={styles.infoValue}>{usuario?.nome || 'Nome não disponível'}</Text>
           </View>
           <View style={styles.infoRow}>
             <Ionicons name="mail-outline" size={20} color="#007676" style={styles.icon} />
             <Text style={styles.infoLabel}>Email</Text>
-            <Text style={styles.infoValue}>Giovanni@gmailll.com</Text>
+            <Text style={styles.infoValue}>{usuario.email}</Text>
           </View>
           <View style={styles.infoRow}>
             <Ionicons name="call-outline" size={20} color="#007676" style={styles.icon} />
             <Text style={styles.infoLabel}>Telefone</Text>
-            <Text style={styles.infoValue}>11 1234-56789</Text>
+            <Text style={styles.infoValue}>{usuario.telefone}</Text>
           </View>
         </View>
       </ScrollView>
@@ -46,7 +109,7 @@ export default function Perfil() {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Home', {id: userId})}>
           <Ionicons name="home-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Início</Text>
         </TouchableOpacity>

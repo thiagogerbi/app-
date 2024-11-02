@@ -1,28 +1,14 @@
-import React from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-const restaurantesPopulares = [
-  { id: '1', nome: 'Burst Burger', tempo: '20-40 Min', descricao: 'Burgers Artesanais', rating: 4.2, frete: 'Grátis', imagem: 'https://example.com/burger.jpg' },
-  { id: '2', nome: 'Pizzas Fischer', tempo: '70-90 Min', descricao: 'Pizzas Artesanais', rating: 4.6, frete: 'R$5,50', imagem: 'https://example.com/pizza.jpg' },
-];
-
-const paraVoce = [
-  { id: '3', nome: 'Peixaria 2 Irm.', tempo: '35-60 Min', descricao: 'Peixes Fritos', rating: 4.4, frete: 'R$10,40', imagem: 'https://example.com/fish.jpg' },
-  { id: '4', nome: 'Massas Luigi', tempo: '35-50 Min', descricao: 'Massas', rating: 4.0, frete: 'R$10,40', imagem: 'https://example.com/pasta.jpg' },
-];
-
-const freteGratis = [
-  { id: '5', nome: 'Mexican Food', tempo: '25-50 Min', descricao: 'Tacos e Burritos', rating: 4.5, frete: 'Grátis', imagem: 'https://example.com/tacos.jpg' },
-  { id: '6', nome: 'Ana Churros', tempo: '35-50 Min', descricao: 'Churros', rating: 4.3, frete: 'Grátis', imagem: 'https://example.com/churros.jpg' },
-];
+import supabase from '../supabase';
 
 const RestaurantList = ({ data }) => (
   <View style={styles.restaurantListContainer}>
     <FlatList
       horizontal
       data={data}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
         <TouchableOpacity style={styles.restaurantCard}>
           <Image source={{ uri: item.imagem }} style={styles.image} />
@@ -37,7 +23,68 @@ const RestaurantList = ({ data }) => (
   </View>
 );
 
-export default function HomeScreen() {
+export default function HomeScreen({ route, navigation}) {
+  const [userAddress, setUserAddress] = useState('Endereço desconhecido');
+  const [restaurantesPopulares, setRestaurantesPopulares] = useState([]);
+  const [paraVoce, setParaVoce] = useState([]);
+  const [freteGratis, setFreteGratis] = useState([]);
+  const userId = route.params?.id;
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserAddress();
+    }
+    fetchRestaurantes();
+  }, [userId]);
+
+  const fetchUserAddress = async () => {
+    try {
+      // Primeiro, buscamos o cliente para obter o id_endereco
+      const { data: clienteData, error: clienteError } = await supabase
+        .from('Cliente')
+        .select('id_endereco')
+        .eq('id', userId)
+        .single();
+
+      if (clienteError) throw clienteError;
+
+      const idEndereco = clienteData.id_endereco;
+
+      // Com o id_endereco, buscamos o endereço na tabela EnderecoCliente
+      const { data: enderecoData, error: enderecoError } = await supabase
+        .from('EnderecoCliente')
+        .select('rua')
+        .eq('id', idEndereco)
+        .single();
+
+      if (enderecoError) throw enderecoError;
+
+      setUserAddress(enderecoData.rua); // Atualiza o endereço no estado
+    } catch (error) {
+      console.error('Erro ao buscar endereço do usuário:', error.message);
+    }
+  };
+
+  const fetchRestaurantes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('Restaurante')
+        .select('*');
+
+      if (error) throw error;
+
+      const populares = data.filter((item) => item.rating >= 4.5);
+      const paraVoceList = data.filter((item) => item.rating >= 4.0 && item.rating < 4.5);
+      const freteGratisList = data.filter((item) => item.frete === 'Grátis');
+
+      setRestaurantesPopulares(populares);
+      setParaVoce(paraVoceList);
+      setFreteGratis(freteGratisList);
+    } catch (error) {
+      console.error('Erro ao buscar restaurantes:', error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Top Navigation Bar */}
@@ -45,11 +92,8 @@ export default function HomeScreen() {
         <TouchableOpacity>
           <Ionicons name="menu" size={20} color="#007676" />
         </TouchableOpacity>
-        <Text style={styles.locationText}>Rua Bel Alliance</Text>
+        <Text style={styles.locationText}>{userAddress}</Text>
         <View style={styles.topNavIcons}>
-          <TouchableOpacity>
-            <Ionicons name="search-outline" size={20} color="#007676" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.cartIcon}>
             <Ionicons name="pricetags" size={20} color="#007676" />
           </TouchableOpacity>
@@ -105,7 +149,7 @@ export default function HomeScreen() {
           <Ionicons name="receipt-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Pedidos</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Perfil', { id: userId})}>
           <Ionicons name="person-outline" size={20} color="#007676" />
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
