@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import  supabase  from '../supabase'; // Verifique se está no caminho correto
+import BottomNav from './BottomNav';
 
 export default function Perfil({ route, navigation }) {
   const [usuario, setUsuario] = useState(null); 
@@ -107,25 +108,8 @@ export default function Perfil({ route, navigation }) {
         <Text style={styles.editButtonText}>Editar</Text>
       </TouchableOpacity>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Home', {id: userId})}>
-          <Ionicons name="home-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Início</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Busca</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Pedidos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Componente BottomNav */}
+      <BottomNav navigation={navigation} userId={userId}/>
     </View>
   );
 }

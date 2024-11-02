@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import BottomNav from './BottomNav';
+import supabase from '../supabase';
 
 // Importando a logo local
-import logoImage from './assets/img/logo.png';
+import logoImage from '../assets/img/logo.png';
 
-export default function OrderScreen() {
+export default function OrderScreen({ navigation, route }) { // Corrigido para receber navigation e route como props
   const [selectedTab, setSelectedTab] = useState('meusPedidos');
+  const userId = route.params?.id; // Extraindo userId de route.params
 
   return (
     <View style={styles.container}>
       {/* Barra de Navegação Superior */}
       <View style={styles.topNav}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={20} color="#007676" />
         </TouchableOpacity>
         {/* Logo no centro da barra de navegação */}
@@ -88,25 +91,8 @@ export default function OrderScreen() {
         )}
       </ScrollView>
 
-      {/* Barra de Navegação Inferior */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Início</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Busca</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Pedidos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Componente BottomNav */}
+      <BottomNav navigation={navigation} userId={userId} />
     </View>
   );
 }
@@ -230,7 +216,8 @@ const styles = StyleSheet.create({
   trackButton: {
     flex: 1,
     backgroundColor: '#fff',
-    border: '2px, solid, #007676', 
+    borderWidth: 2,
+    borderColor: '#007676',
     paddingVertical: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -246,7 +233,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     backgroundColor: '#FFF',
-    border: '2px, solid, #FF0000',  
+    borderWidth: 2,
+    borderColor: '#FF0000',
   },
   cancelButtonText: {
     color: '#FF0000',
@@ -260,25 +248,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: '#666',
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 12,
-    backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    borderColor: '#DDD',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  navButton: {
-    alignItems: 'center',
-  },
-  navText: {
-    fontSize: 12,
-    color: '#007676',
-    marginTop: 4,
   },
 });

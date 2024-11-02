@@ -73,25 +73,8 @@ export default function FoodCategoriesScreen() {
         ))}
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Início</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Busca</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Pedidos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
+       {/* Componente BottomNav */}
+       <BottomNav navigation={navigation} userId={userId}/>
     </View>
   );
 }

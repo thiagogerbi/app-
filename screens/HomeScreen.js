@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import supabase from '../supabase';
+import BottomNav from './BottomNav';
 
 const RestaurantList = ({ data }) => (
   <View style={styles.restaurantListContainer}>
@@ -98,7 +99,7 @@ export default function HomeScreen({ route, navigation}) {
             <Ionicons name="pricetags" size={20} color="#007676" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={20} color="#007676" />
+            <Ionicons name="cart-outline" size={20} color="#007676" onPress={() => navigation.navigate('Pedidos', { id: userId})} />
           </TouchableOpacity>
         </View>
       </View>
@@ -135,25 +136,8 @@ export default function HomeScreen({ route, navigation}) {
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Início</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Busca</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Pedidos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Perfil', { id: userId})}>
-          <Ionicons name="person-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
+       {/* Componente BottomNav */}
+       <BottomNav navigation={navigation} userId={userId}/>
     </View>
   );
 }
