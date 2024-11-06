@@ -9,7 +9,9 @@ import Login from './screens/OnEatLoginScreen';
 import LoginScreen from './screens/LoginScreen';
 import Perfil from './screens/Perfil';
 import Pedidos from './screens/OrderScreen';
-import BottomNav from './screens/BottomNav';
+import PersonalInfo from './screens/PersonalInfoScreen';
+import Busca from './screens/FoodCategoriesScreen'
+import RestauranteScreen from './screens/RestaurantScreen'
 
 const Stack = createStackNavigator();
 
@@ -25,7 +27,9 @@ export default function App() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="Perfil" component={Perfil} />
         <Stack.Screen name="Pedidos" component={Pedidos} />
-        <Stack.Screen name="BottomNav" component={BottomNav} />
+        <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+        <Stack.Screen name="Busca" component={Busca} />
+        <Stack.Screen name="RestauranteScreen" component={RestauranteScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

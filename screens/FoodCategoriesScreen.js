@@ -1,22 +1,27 @@
 import React from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import BottomNav from './BottomNav';
+import supabase from '../supabase';
+import TopNav from './TopNav';
 
 // Importando imagens locais
-import burgerImage from './assets/img/burger.png';
-import pizzaImage from './assets/img/pizza.png';
-import japonesaImage from './assets/img/japonesa.png';
-import mexicanaImage from './assets/img/mexicana.png';
-import massasImage from './assets/img/massas.png';
-import docesImage from './assets/img/doces.png';
-import fitImage from './assets/img/fit.png';
-import padariaImage from './assets/img/padaria.png';
-import churrascoImage from './assets/img/churrasco.png';
-import veganaImage from './assets/img/vegana.png';
-import chinesaImage from './assets/img/chinesa.png';
-import marmitaImage from './assets/img/marmita.png';
+import burgerImage from '../assets/img/burger.png';
+import pizzaImage from '../assets/img/pizza.png';
+import japonesaImage from '../assets/img/japonesa.png';
+import mexicanaImage from '../assets/img/mexicana.png';
+import massasImage from '../assets/img/massas.png';
+import docesImage from '../assets/img/doces.png';
+import fitImage from '../assets/img/fit.png';
+import padariaImage from '../assets/img/padaria.png';
+import churrascoImage from '../assets/img/churrasco.png';
+import veganaImage from '../assets/img/vegana.png';
+import chinesaImage from '../assets/img/chinesa.png';
+import marmitaImage from '../assets/img/marmita.png';
 
-export default function FoodCategoriesScreen() {
+export default function FoodCategoriesScreen({navigation, route}) {
+
+  const userId = route.params?.id;
   const categories = [
     { name: 'Burgers', image: burgerImage },
     { name: 'Pizzas', image: pizzaImage },
@@ -35,20 +40,11 @@ export default function FoodCategoriesScreen() {
   return (
     <View style={styles.container}>
       {/* Top Navigation Bar */}
-      <View style={styles.topNav}>
-        <TouchableOpacity>
-          <Ionicons name="arrow-back" size={20} color="#007676" />
-        </TouchableOpacity>
-        <Text style={styles.locationText}>Rua Bel Alliance</Text>
-        <View style={styles.topNavIcons}>
-          <TouchableOpacity>
-            <Ionicons name="pricetags" size={20} color="#007676" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={20} color="#007676" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <TopNav
+        userAddress={userAddress}
+        onMenuPress={() => { /* Lógica para abrir o menu */ }}
+        onCartPress={() => navigation.navigate('Pedidos', { id: userId })}
+      />
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>

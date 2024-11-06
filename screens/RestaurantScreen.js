@@ -1,6 +1,9 @@
-import React from 'react';
-import { View, Text, Image, FlatList, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Make sure you install @expo/vector-icons
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, FlatList, ScrollView, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que você instalou @expo/vector-icons
+import supabase from '../supabase'; // Importando o supabase para buscar dados
+import BottomNav from './BottomNav';
+import TopNav from './TopNav';
 
 const BURGERS = [
   { id: '1', name: 'The Rock', description: 'Carne Bovina 300g\nCebola Caramelizada\nQueijo Cheddar', price: 'R$ 35,90', image: 'therock' },
@@ -14,7 +17,30 @@ const SIDES = [
   { id: '3', name: 'Onion Rings', description: 'Porção Frita 180g\n+ Molho Caseiro', price: 'R$ 14,90', image: 'onionrings' },
 ];
 
-export default function RestaurantScreen() {
+export default function RestaurantScreen({ route, navigation }) {
+  const { restaurantId, userId } = route.params; // Obtendo o ID do restaurante passado pela navegação
+  const [restaurantDetails, setRestaurantDetails] = useState(null);
+
+  useEffect(() => {
+    fetchRestaurantDetails();
+  }, []);
+
+  const fetchRestaurantDetails = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('Restaurante') // Supondo que você tenha uma tabela chamada 'Restaurante'
+        .select('*') // Seleciona todos os campos
+        .eq('id', restaurantId)
+        .single();
+
+      if (error) throw error;
+
+      setRestaurantDetails(data);
+    } catch (error) {
+      console.error('Erro ao buscar detalhes do restaurante:', error.message);
+    }
+  };
+
   const renderBurger = ({ item }) => (
     <View style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.cardImage} />
@@ -24,30 +50,17 @@ export default function RestaurantScreen() {
     </View>
   );
 
+  if (!restaurantDetails) {
+    return <Text>Carregando...</Text>; // Exibe uma mensagem de carregamento enquanto os dados estão sendo buscados
+  }
+
   return (
     <View style={styles.container}>
-      
-      {/* Top Navigation Bar */}
-      <View style={styles.topNav}>
-        <TouchableOpacity>
-          <Ionicons name="arrow-back" size={20} color="#007676" />
-        </TouchableOpacity>
-        <Text style={styles.locationText}>Rua Bel Alliance</Text>
-        <View style={styles.topNavIcons}>
-          <TouchableOpacity>
-            <Ionicons name="pricetags" size={20} color="#007676" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={20} color="#007676" />
-          </TouchableOpacity>
-        </View>
-      </View>
-      
       <ScrollView style={styles.content}>
         <View style={styles.header}>
-          <Image source={{ uri: 'logo' }} style={styles.logo} />
+          <Image source={{ uri: restaurantDetails.imagem }} style={styles.logo} />
           <View style={styles.headerTextContainer}>
-            <Text style={styles.title}>Burst Burger</Text>
+            <Text style={styles.title}>{restaurantDetails.nome}</Text> {/* Nome do restaurante */}
             <Text style={styles.subtitle}>★★★★★ 4 Mil Avaliações</Text>
             <Text style={styles.subtitle}>Av Goiás - 370, São Caetano do Sul</Text>
             <Text style={styles.status}>20 - 40 Min • Aberto</Text>
@@ -85,24 +98,7 @@ export default function RestaurantScreen() {
       </ScrollView>
 
       {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Início</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Busca</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Pedidos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNav navigation={navigation} userId={userId} />
     </View>
   );
 }

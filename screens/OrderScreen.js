@@ -1,24 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import BottomNav from './BottomNav';
 import supabase from '../supabase';
-
-// Importando a logo local
 import logoImage from '../assets/img/logo.png';
 
-export default function OrderScreen({ navigation, route }) { // Corrigido para receber navigation e route como props
+export default function OrderScreen({ navigation, route }) {
   const [selectedTab, setSelectedTab] = useState('meusPedidos');
-  const userId = route.params?.id; // Extraindo userId de route.params
+  const [userAddress, setUserAddress] = useState({
+    rua: 'Rua desconhecida',
+    numero: '',
+    complemento: '',
+  });
+  const userId = route.params?.id;
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserAddress();
+    }
+  }, [userId]);
+
+  const fetchUserAddress = async () => {
+    try {
+      const { data: clienteData, error: clienteError } = await supabase
+        .from('Cliente')
+        .select('id_endereco')
+        .eq('id', userId)
+        .single();
+
+      if (clienteError) throw clienteError;
+
+      const idEndereco = clienteData.id_endereco;
+
+      const { data: enderecoData, error: enderecoError } = await supabase
+        .from('EnderecoCliente')
+        .select('rua, numero, complemento')
+        .eq('id', idEndereco)
+        .single();
+
+      if (enderecoError) throw enderecoError;
+
+      setUserAddress({
+        rua: enderecoData.rua,
+        numero: enderecoData.numero,
+        complemento: enderecoData.complemento,
+      });
+    } catch (error) {
+      console.error('Erro ao buscar endereço do usuário:', error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {/* Barra de Navegação Superior */}
       <View style={styles.topNav}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={20} color="#007676" />
         </TouchableOpacity>
-        {/* Logo no centro da barra de navegação */}
         <Image source={logoImage} style={styles.logoTopNav} />
         <View style={styles.topNavIcons}>
           <TouchableOpacity>
@@ -30,7 +67,6 @@ export default function OrderScreen({ navigation, route }) { // Corrigido para r
         </View>
       </View>
 
-      {/* Abas "Meus Pedidos" e "Histórico de Pedidos" */}
       <View style={styles.tabsContainer}>
         <TouchableOpacity
           style={[styles.tab, selectedTab === 'meusPedidos' && styles.activeTab]}
@@ -46,7 +82,6 @@ export default function OrderScreen({ navigation, route }) { // Corrigido para r
         </TouchableOpacity>
       </View>
 
-      {/* Informações do Pedido */}
       <ScrollView style={styles.scrollView}>
         {selectedTab === 'meusPedidos' ? (
           <View style={styles.orderBox}>
@@ -70,7 +105,7 @@ export default function OrderScreen({ navigation, route }) { // Corrigido para r
             <Text style={styles.total}>Total: R$ 54,70</Text>
 
             <Text style={styles.address}>Endereço de Entrega</Text>
-            <Text style={styles.addressDetails}>Rua Bel Alliance, 56 - São Caetano do Sul</Text>
+            <Text style={styles.addressDetails}>{`${userAddress.rua}, ${userAddress.numero}  - ${userAddress.complemento}`}</Text>
             
             <Text style={styles.payment}>Forma de Pagamento</Text>
             <Text style={styles.paymentDetails}>Cartão de Crédito (Visa)</Text>
@@ -91,7 +126,6 @@ export default function OrderScreen({ navigation, route }) { // Corrigido para r
         )}
       </ScrollView>
 
-      {/* Componente BottomNav */}
       <BottomNav navigation={navigation} userId={userId} />
     </View>
   );

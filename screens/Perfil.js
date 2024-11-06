@@ -104,7 +104,7 @@ export default function Perfil({ route, navigation }) {
       </ScrollView>
 
       {/* Edit Button positioned above the bottom navigation */}
-      <TouchableOpacity style={styles.editButton}>
+      <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('PersonalInfo', {id: userId})}>
         <Text style={styles.editButtonText}>Editar</Text>
       </TouchableOpacity>
 
