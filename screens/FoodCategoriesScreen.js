@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import BottomNav from './BottomNav';
@@ -20,6 +20,7 @@ import chinesaImage from '../assets/img/chinesa.png';
 import marmitaImage from '../assets/img/marmita.png';
 
 export default function FoodCategoriesScreen({navigation, route}) {
+  const [userAddress, setUserAddress] = useState('Endereço desconhecido');
 
   const userId = route.params?.id;
   const categories = [

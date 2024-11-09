@@ -10,27 +10,32 @@ import LoginScreen from './screens/LoginScreen';
 import Perfil from './screens/Perfil';
 import Pedidos from './screens/OrderScreen';
 import PersonalInfo from './screens/PersonalInfoScreen';
-import Busca from './screens/FoodCategoriesScreen'
-import RestauranteScreen from './screens/RestaurantScreen'
+import Busca from './screens/FoodCategoriesScreen';
+import RestauranteScreen from './screens/RestaurantScreen';
+import ProductDetails from './screens/ProductDetails';
+import { AuthProvider } from './contexts/AuthContext';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="CadastroPassword" component={CadastroPassword} />
-        <Stack.Screen name="Adresses" component={Adresses} />
-        <Stack.Screen name="Cadastro" component={Cadastro} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="Perfil" component={Perfil} />
-        <Stack.Screen name="Pedidos" component={Pedidos} />
-        <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
-        <Stack.Screen name="Busca" component={Busca} />
-        <Stack.Screen name="RestauranteScreen" component={RestauranteScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="CadastroPassword" component={CadastroPassword} />
+          <Stack.Screen name="Adresses" component={Adresses} />
+          <Stack.Screen name="Cadastro" component={Cadastro} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="Perfil" component={Perfil} />
+          <Stack.Screen name="Pedidos" component={Pedidos} />
+          <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+          <Stack.Screen name="Busca" component={Busca} />
+          <Stack.Screen name="RestauranteScreen" component={RestauranteScreen} />
+          <Stack.Screen name="ProductDetails" component={ProductDetails} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }

@@ -1,9 +1,34 @@
-// TopNav.js
-import React, {useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../contexts/AuthContext'; // Importa o contexto de autenticação
+import supabase from '../supabase';
 
-const TopNav = ({ userAddress, onMenuPress, onCartPress }) => {
+export default function TopNav({ onMenuPress, onCartPress }) {
+  const { user } = useAuth(); // Obtém o usuário autenticado do contexto
+  const [userAddress, setUserAddress] = useState('Endereço desconhecido');
+
+  // Busca o endereço do usuário do banco de dados, caso esteja logado
+  useEffect(() => {
+    if (user) {
+      fetchUserAddress();
+    }
+  }, [user]);
+
+  const fetchUserAddress = async () => {
+    try {
+      const { data: enderecoData, error: enderecoError } = await supabase
+        .from('EnderecoCliente')
+        .select('rua, numero')
+        .eq('id', user.id_endereco)
+        .single();
+      
+      if (enderecoError) throw enderecoError;
+      setUserAddress(`${enderecoData.rua}, ${enderecoData.numero}`);
+    } catch (error) {
+      console.error('Erro ao buscar endereço:', error.message);
+    }
+  };
 
   return (
     <View style={styles.topNav}>
@@ -21,7 +46,7 @@ const TopNav = ({ userAddress, onMenuPress, onCartPress }) => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   topNav: {
@@ -45,5 +70,3 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
 });
-
-export default TopNav;

@@ -1,33 +1,100 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { View, Text, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // You may need to install this package
+import BottomNav from './BottomNav';
+import TopNav from './TopNav';
+import supabase from '../supabase';
 
-export default function ProductDetails() {
+
+export default function ProductDetails({navigation, route}) {
+    const [userAddress, setUserAddress] = useState('Endereço desconhecido');
+    const [restaurantData, setRestaurantData] = useState(null);
+    const userId = route.params?.id;
+    const restaurantId = route.params?.restaurantId;
+  
+    useEffect(() => {
+      if (userId) fetchUserAddress();
+      if (restaurantId) fetchRestaurantData();
+    }, [userId, restaurantId]);
+  
+    // Função para buscar o endereço do usuário
+    const fetchUserAddress = async () => {
+      try {
+        const { data: clienteData, error: clienteError } = await supabase
+          .from('Cliente')
+          .select('id_endereco')
+          .eq('id', userId)
+          .single();
+  
+        if (clienteError) throw clienteError;
+  
+        const idEndereco = clienteData.id_endereco;
+  
+        const { data: enderecoData, error: enderecoError } = await supabase
+          .from('EnderecoCliente')
+          .select('rua, numero')
+          .eq('id', idEndereco)
+          .single();
+  
+        if (enderecoError) throw enderecoError;
+  
+        setUserAddress(`${enderecoData.rua}, ${enderecoData.numero}`);
+      } catch (error) {
+        console.error('Erro ao buscar endereço do usuário:', error.message);
+      }
+    };
+  
+   // Função para buscar os dados do restaurante e seu endereço
+const fetchRestaurantData = async () => {
+  try {
+    // Buscar dados do restaurante
+    const { data: restauranteData, error: restauranteError } = await supabase
+      .from('Restaurante')
+      .select('nome, frete, id_endereco')
+      .eq('id', restaurantId)
+      .single();
+    
+    if (restauranteError) throw restauranteError;
+
+    const idEnderecoRestaurante = restauranteData.id_endereco;
+
+    // Buscar o endereço do restaurante usando o id_endereco
+    const { data: enderecoRestauranteData, error: enderecoError } = await supabase
+      .from('EnderecoRestaurante')
+      .select('rua, numero, cidade')
+      .eq('id', idEnderecoRestaurante)
+      .single();
+    
+    if (enderecoError) throw enderecoError;
+
+    // Montar os dados completos do restaurante, incluindo o endereço
+    setRestaurantData({
+      ...restauranteData,
+      endereco: `${enderecoRestauranteData.rua}, ${enderecoRestauranteData.numero} - ${enderecoRestauranteData.cidade}`
+    });
+  } catch (error) {
+    console.error('Erro ao buscar dados do restaurante:', error.message);
+  }
+};
+  
+
   return (
     <View style={styles.container}>
-      {/* Top Navigation Bar */}
-      <View style={styles.topNav}>
-        <TouchableOpacity>
-          <Ionicons name="arrow-back" size={20} color="#007676" />
-        </TouchableOpacity>
-        <Text style={styles.locationText}>Rua Bel Alliance</Text>
-        <View style={styles.topNavIcons}>
-          <TouchableOpacity>
-            <Ionicons name="pricetags" size={20} color="#007676" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cartIcon}>
-            <Ionicons name="cart-outline" size={20} color="#007676" />
-          </TouchableOpacity>
-        </View>
-      </View>
+       <TopNav
+        userAddress={userAddress}
+        onCartPress={() => navigation.navigate('Pedidos', { id: userId })}
+      />
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Product Content */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Burst Burger</Text>
-          <Text style={styles.subTitle}>20 ~ 40 Min • Aberto</Text>
-          <Text style={styles.address}>Av Goiás - 370, São Caetano do Sul</Text>
-        </View>
+      <ScrollView  contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.header}>
+        {restaurantData && (
+        <>
+      <Text style={styles.title}>{restaurantData.nome}</Text>
+      <Text style={styles.subTitle}>20 ~ 40 Min • Aberto</Text>
+      <Text style={styles.address}>{restaurantData.endereco}</Text>
+        </>
+       )}
+      </View>
 
         <Image
           source={{ uri: 'https://example.com/burger-image.png' }} // Replace with actual image URL
@@ -100,24 +167,7 @@ export default function ProductDetails() {
         </View>
       </ScrollView>
 
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Início</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="search-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Busca</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="receipt-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Pedidos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="person-outline" size={20} color="#007676" />
-          <Text style={styles.navText}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNav style={styles.bottomNav} navigation={navigation} userId={userId} />
     </View>
   );
 }

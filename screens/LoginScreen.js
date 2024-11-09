@@ -1,66 +1,32 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Toast from 'react-native-toast-message';
-import supabase from '../supabase'; // ajuste o caminho conforme a estrutura do seu projeto
-import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { AuthContext } from '../contexts/AuthContext';
 
-export default function LoginScreen() {
-  const navigation = useNavigation();
+export default function LoginScreen({ navigation }) {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
   const handleLogin = async () => {
-    try {
-      const { data: cliente, error } = await supabase
-        .from('Cliente')
-        .select('*')
-        .eq('email', email)
-        .eq('senha', senha);
-
-      if (error) {
-        throw error;
-      }
-
-      if (cliente && cliente.length > 0) {
-        // Usuário encontrado, navega para a tela de home
-        Toast.show({
-          type: 'success',
-          text1: 'Login realizado com sucesso!',
-        });
-        navigation.navigate('Home', { id: cliente[0].id });
-      } else {
-        // Usuário não encontrado
-        Toast.show({
-          type: 'error',
-          text1: 'Erro de autenticação',
-          text2: 'Email ou senha incorretos.',
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      Toast.show({
-        type: 'error',
-        text1: 'Erro!',
-        text2: 'Ocorreu um erro ao tentar fazer login.',
-      });
+    const { error } = await login(email, senha);
+    if (error) {
+      Alert.alert('Erro', error);
+    } else {
+      navigation.navigate('Home');
     }
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton}>
-        <Icon name="arrow-back" size={24} color="#047377" />
-      </TouchableOpacity>
-      <View style={styles.logoContainer}>
-        <Image source={require('../assets/img/logo-login.png')} style={styles.logoImage} />
-      </View>
-      <Text style={styles.title}>Acesse sua conta e comece a fazer seus pedidos!</Text>
+      <Text style={styles.title}>Bem-vindo ao OnEat</Text>
 
+      {/* Input de Email */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
+          placeholder="Digite seu email"
+          placeholderTextColor="#888"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -68,21 +34,23 @@ export default function LoginScreen() {
         />
       </View>
 
+      {/* Input de Senha */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Senha</Text>
         <TextInput
           style={styles.input}
+          placeholder="Digite sua senha"
+          placeholderTextColor="#888"
+          secureTextEntry
           value={senha}
           onChangeText={setSenha}
-          secureTextEntry
         />
       </View>
 
+      {/* Botão de Login */}
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
-      
-      <Toast />
     </View>
   );
 }
@@ -95,43 +63,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#E7F0F3',
     paddingHorizontal: 20,
   },
-  backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-  },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  logoImage: {
-    width: 160,
-    height: 160,
-    resizeMode: 'contain',
-  },
   title: {
-    fontSize: 18,
-    fontWeight: '400',
-    color: '#333',
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#047377',
+    marginBottom: 30,
     textAlign: 'center',
   },
   inputContainer: {
     width: '100%',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,
     color: '#000',
-    marginBottom: 5,
+    marginBottom: 8,
   },
   input: {
     height: 50,
     borderColor: '#047377',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
   },
   button: {
     width: '100%',
@@ -139,8 +93,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#047377',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
-    marginTop: 10,
+    borderRadius: 8,
+    marginTop: 20,
   },
   buttonText: {
     color: '#fff',

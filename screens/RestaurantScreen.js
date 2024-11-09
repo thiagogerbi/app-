@@ -1,56 +1,95 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, ScrollView, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que você instalou @expo/vector-icons
+import { View, Text, FlatList, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import supabase from '../supabase'; // Importando o supabase para buscar dados
 import BottomNav from './BottomNav';
-import TopNav from './TopNav';
 
 const BURGERS = [
-  { id: '1', name: 'The Rock', description: 'Carne Bovina 300g\nCebola Caramelizada\nQueijo Cheddar', price: 'R$ 35,90', image: 'therock' },
-  { id: '2', name: 'Taylor Swift', description: 'Carne Bovina 500g\nQueijo Parmesão\nBacon', price: 'R$ 37,50', image: 'taylorswift' },
-  { id: '3', name: 'Arutz Burger', description: 'Peito de Frango 100g\nQueijo Muçarela\nPão Brioche', price: 'R$ 32,40', image: 'arutzburger' },
+  { id: '1', name: 'The Rock', description: 'Carne Bovina 300g\nCebola Caramelizada\nQueijo Cheddar', price: 'R$ 35,90' },
+  { id: '2', name: 'Taylor Swift', description: 'Carne Bovina 500g\nQueijo Parmesão\nBacon', price: 'R$ 37,50' },
+  { id: '3', name: 'Arutz Burger', description: 'Peito de Frango 100g\nQueijo Muçarela\nPão Brioche', price: 'R$ 32,40' },
 ];
 
 const SIDES = [
-  { id: '1', name: 'Batata Rústica', description: 'Porção Frita 100g\nTempero da casa', price: 'R$ 9,90', image: 'batata' },
-  { id: '2', name: 'Nuggets', description: 'Porção Frita 200g\n+ Tempero da casa', price: 'R$ 12,90', image: 'nuggets' },
-  { id: '3', name: 'Onion Rings', description: 'Porção Frita 180g\n+ Molho Caseiro', price: 'R$ 14,90', image: 'onionrings' },
+  { id: '1', name: 'Batata Rústica', description: 'Porção Frita 100g\nTempero da casa', price: 'R$ 9,90' },
+  { id: '2', name: 'Nuggets', description: 'Porção Frita 200g\n+ Tempero da casa', price: 'R$ 12,90' },
+  { id: '3', name: 'Onion Rings', description: 'Porção Frita 180g\n+ Molho Caseiro', price: 'R$ 14,90' },
 ];
 
 export default function RestaurantScreen({ route, navigation }) {
-  const { restaurantId, userId } = route.params; // Obtendo o ID do restaurante passado pela navegação
+  const { restaurantId } = route.params; // Obtendo o ID do restaurante passado pela navegação
+  const userId = route.params?.id;
   const [restaurantDetails, setRestaurantDetails] = useState(null);
+  const [addressDetails, setAddressDetails] = useState(null); // Estado para armazenar o endereço
 
   useEffect(() => {
     fetchRestaurantDetails();
   }, []);
 
+  // Função para buscar os detalhes do restaurante
   const fetchRestaurantDetails = async () => {
     try {
       const { data, error } = await supabase
-        .from('Restaurante') // Supondo que você tenha uma tabela chamada 'Restaurante'
-        .select('*') // Seleciona todos os campos
+        .from('Restaurante')
+        .select('id, nome, id_endereco') // Pega id, nome e endereco_id
         .eq('id', restaurantId)
         .single();
 
       if (error) throw error;
 
       setRestaurantDetails(data);
+      
+      // Verifica se o id_endereco não está undefined antes de tentar buscar os detalhes do endereço
+      if (data.id_endereco) {
+        fetchAddressDetails(data.id_endereco); // Passa o id do endereco
+      } else {
+        console.error('Endereço não encontrado no restaurante.');
+      }
     } catch (error) {
       console.error('Erro ao buscar detalhes do restaurante:', error.message);
     }
   };
 
+  // Função para buscar os detalhes do endereço na tabela EnderecoCliente
+  const fetchAddressDetails = async (enderecoId) => {
+    try {
+      const { data, error } = await supabase
+        .from('EnderecoRestaurante')
+        .select('rua, numero, cidade')
+        .eq('id', enderecoId);
+  
+      if (error) throw error;
+  
+      if (data&& data.length === 1) {
+        setAddressDetails(data[0]); // Usa a primeira linha se houver apenas uma
+      } else if (data.length > 1) {
+        console.error(`Erro: Múltiplos endereços encontrados para o ID ${enderecoId}`);
+      } else {
+        console.error('Endereço não encontrado.');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar detalhes do endereço:', error.message);
+    }
+  };
+
+  // Função para navegar para a tela de detalhes do produto
+  const handleBurgerPress = (burger) => {
+    navigation.navigate('ProductDetails', {
+      product: burger,
+      userId: userId,
+      restaurantId: restaurantId,
+    });
+  
+  };
+
   const renderBurger = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.cardImage} />
+    <TouchableOpacity style={styles.card} onPress={() => handleBurgerPress(item)}>
       <Text style={styles.cardTitle}>{item.name}</Text>
       <Text style={styles.cardDescription}>{item.description}</Text>
       <Text style={styles.cardPrice}>{item.price}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
-  if (!restaurantDetails) {
+  if (!restaurantDetails || !addressDetails) {
     return <Text>Carregando...</Text>; // Exibe uma mensagem de carregamento enquanto os dados estão sendo buscados
   }
 
@@ -58,11 +97,16 @@ export default function RestaurantScreen({ route, navigation }) {
     <View style={styles.container}>
       <ScrollView style={styles.content}>
         <View style={styles.header}>
-          <Image source={{ uri: restaurantDetails.imagem }} style={styles.logo} />
           <View style={styles.headerTextContainer}>
-            <Text style={styles.title}>{restaurantDetails.nome}</Text> {/* Nome do restaurante */}
+            <Text style={styles.title}>{restaurantDetails.nome}</Text>
             <Text style={styles.subtitle}>★★★★★ 4 Mil Avaliações</Text>
-            <Text style={styles.subtitle}>Av Goiás - 370, São Caetano do Sul</Text>
+            
+            {addressDetails?(
+              <Text style={styles.subtitle}>{addressDetails.rua}, {addressDetails.numero} - {addressDetails.cidade}</Text>
+            ) : (
+              <Text style={styles.subtitle}>Endereço não disponível</Text>
+            )}
+
             <Text style={styles.status}>20 - 40 Min • Aberto</Text>
           </View>
         </View>
